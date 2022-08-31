@@ -5,6 +5,8 @@ server  {
 
     location / {
         proxy_pass         http://%ip%:5678;
+        ssl_certificate %ssl_pem%;
+        ssl_certificate_key %ssl_key%;
     }
 
     location /error/ {
