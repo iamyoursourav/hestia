@@ -7,7 +7,7 @@ server {
     error_log  /var/log/%web_system%/domains/%domain%.error.log error;
 
     location / {
-        proxy_pass      https://192.168.0.3:443/;
+        proxy_pass      https://localhost:5678/;
     }
 
     location /error/ {
