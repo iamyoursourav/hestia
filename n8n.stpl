@@ -1,12 +1,27 @@
 server  {
     listen      %ip%:%proxy_ssl_port% ssl http2;
     server_name %domain_idn% %alias_idn%;
+    ssl on;
+    ssl_certificate      %ssl_pem%;
+    ssl_certificate_key  %ssl_key%;
+    
+    gzip on;
+    gzip_min_length  1100;
+    gzip_buffers  4 32k;
+    gzip_types    image/svg+xml svg svgz text/plain application/x-javascript text/xml text/css;
+    gzip_vary on;
+    
     include %home%/%user%/conf/web/%domain%/nginx.hsts.conf*;
 
     location / {
-        proxy_pass         http://%ip%:5678;
-        ssl_certificate %ssl_pem%;
-        ssl_certificate_key %ssl_key%;
+        proxy_pass         https://%ip%:5678;
+        
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_cache_bypass $http_upgrade;
     }
 
     location /error/ {
